@@ -5,23 +5,36 @@ const jwt = require('jsonwebtoken');
 const config = require('../config');
 const {getToken} = require('../../utils');
 
-const register = async(req,res,next)=>{
-    try{
+const register = async (req, res, next) => {
+    try {
         const payload = req.body;
+
+        const existingUser = await User.findOne({ email: payload.email });
+        if (existingUser) {
+            return res.json({
+                error: 1,
+                message: 'Email is already registered.'
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(payload.password, 10);
+        payload.password = hashedPassword;
+
         let user = new User(payload);
         await user.save();
         return res.json(user);
-    }catch(err){
-        if(err && err.name === 'ValidationError'){
+    } catch (err) {
+        if (err && err.name === 'ValidationError') {
             return res.json({
-                error:1,
-                massage: err.massage,
+                error: 1,
+                message: err.message,
                 fields: err.errors
             });
         }
         next(err);
     }
-}
+};
+
 
 const localStrategy = async (email,password,done)=>{
     try{

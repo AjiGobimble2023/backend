@@ -23,6 +23,7 @@ app.use(cookieParser());
 app.use('/public/images/news', express.static(path.join(__dirname, 'public/images/news')));
 app.use('/public/images/events', express.static(path.join(__dirname, 'public/images/events')));
 app.use('/public/images/discus', express.static(path.join(__dirname, 'public/images/discus')));
+app.use('/public/images/user', express.static(path.join(__dirname, 'public/images/user')));
 app.use(decodeToken());
 
 app.use('/api', AuthRouter);
