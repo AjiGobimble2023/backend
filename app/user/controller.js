@@ -19,7 +19,7 @@ const getUserByToken = async (req, res) => {
   };
 const updateUser = async (req, res) => {
     const userId = req.user._id;
-    const { full_name, phoneNumber,address,birthDate,campusName,city} = req.body;
+    const { full_name, phoneNumber,address,birthDate,campus_name,city} = req.body;
     const image = req.file;
   
     try {
@@ -32,7 +32,7 @@ const updateUser = async (req, res) => {
       user.address = address ?? user.address;
       user.phoneNumber = phoneNumber?? user.phoneNumber;
       user.birthDate = birthDate?? user.birthDate;
-      user.campus_name = campusName ?? user.campus_name;
+      user.campus_name = campus_name ?? user.campus_name;
       user.city = city ?? user.city;
       
   
@@ -43,7 +43,7 @@ const updateUser = async (req, res) => {
           const target = path.join(__dirname, '../../public/images/user/', imageName);
           fs.renameSync(image.path, target);
   
-         user.image_url = image ? `http://192.168.20.249:3000/public/images/user/${imageName}` : '';
+         user.image_url = image ? `http://192.168.7.210:3001/public/images/user/${imageName}` : '';
         }
   
   
@@ -76,7 +76,7 @@ const updateUser = async (req, res) => {
           const target = path.join(__dirname, '../../public/images/user/', imageName);
           fs.renameSync(image.path, target);
   
-         user.image_url = image ? `http://192.168.20.249:3000/public/images/user/${imageName}` : '';
+         user.image_url = image ? `http://192.168.7.210:3001/public/images/user/${imageName}` : '';
         }
       await user.save();
   
@@ -91,10 +91,39 @@ const updateUser = async (req, res) => {
       res.status(500).json({ error: 'Error updating user article.' });
     }
   };
+  const getAllUsersWithRoleUser = async (req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1; 
+      const limit = 10;
+      const searchQuery = req.query.search || '';
+
+      const totalUser = await User.countDocuments({
+        full_name: { $regex: searchQuery, $options: 'i' },
+      });
+      const totalPages = Math.ceil(totalUser / limit);
+      const users = await User.find({
+        full_name: { $regex: searchQuery, $options: 'i' },
+        role: 'user'
+      }).select('-password -createdAt -updatedAt -token -role -_id')
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+     
+  
+      if (users.length === 0) {
+        return res.status(404).json({ error: 'Tidak ada pengguna dengan peran "user".' });
+      }
+  
+      res.status(200).json({ data:users, totalPages });
+    } catch (error) {
+      res.status(500).json({ error: 'Terjadi kesalahan saat mengambil data pengguna.' });
+    }
+  };
   
   module.exports = {
     updateUser,
     getUserByToken,
-    updatePhotoUser
+    updatePhotoUser,
+    getAllUsersWithRoleUser
   };
   

@@ -57,7 +57,7 @@ const createDiscussionTopic = async (req, res) => {
         title,
         content,
         author: req.user,
-        image_url: image ? `http://192.168.20.249:3000/public/images/discus/${imageName}` : '',
+        image_url: image ? `http://192.168.7.210:3001/public/images/discus/${imageName}` : '',
       });
   
       res.status(201).json(createdDiscussionTopic);
@@ -87,9 +87,9 @@ const updateDiscussionTopicById = async (req, res) => {
       return res.status(404).json({ error: 'DiscussionTopic article not found.' });
     }
 
-    DiscussionTopic.title = title;
-    DiscussionTopic.content = content;
-    DiscussionTopic.author = req.user;
+    discussionTopic.title = title;
+    discussionTopic.content = content;
+    discussionTopic.author = req.user;
 
     if (image) {
         const imageTitle = title.replace(/\s+/g, '-').toLowerCase();
@@ -98,7 +98,7 @@ const updateDiscussionTopicById = async (req, res) => {
         const target = path.join(__dirname, '../../public/images/discus/', imageName);
         fs.renameSync(image.path, target);
 
-       DiscussionTopic.image_url = image ? `http://192.168.20.249:3000/public/images/discus/${imageName}` : '';
+       discussionTopic.image_url = image ? `http://192.168.7.210:3001/public/images/discus/${imageName}` : '';
       }
 
 

@@ -59,7 +59,7 @@ const createEvents = async (req, res) => {
       location,
       description,
       createdBy: req.user,
-      image_url: image ? `http://192.168.20.249:3000/public/images/events/${imageName}` : '',
+      image_url: image ? `http://192.168.7.210:3001/public/images/events/${imageName}` : '',
     });
 
     res.status(201).json(createdEvent);
@@ -102,7 +102,7 @@ const updateEventsById = async (req, res) => {
         const target = path.join(__dirname, '../../public/images/Events/', imageName);
         fs.renameSync(image.path, target);
 
-       events.image_url = image ? `http://192.168.20.249:3000/public/images/Events/${imageName}` : '';
+       events.image_url = image ? `http://192.168.7.210:3001/public/images/Events/${imageName}` : '';
       }
 
 

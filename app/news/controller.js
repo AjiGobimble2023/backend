@@ -60,7 +60,7 @@ const createNews = async (req, res) => {
         title,
         content,
         author: req.user,
-        image_url: image ? `http://192.168.20.249:3000/public/images/news/${imageName}` : '',
+        image_url: image ? `http://192.168.7.210:3001/public/images/news/${imageName}` : '',
       });
   
       res.status(201).json(createdNews);
@@ -101,7 +101,7 @@ const updateNewsById = async (req, res) => {
         const target = path.join(__dirname, '../../public/images/news/', imageName);
         fs.renameSync(image.path, target);
 
-       news.image_url = image ? `http://192.168.20.249:3000/public/images/news/${imageName}` : '';
+       news.image_url = image ? `http://192.168.7.210:3001/public/images/news/${imageName}` : '';
       }
 
 
